@@ -30,8 +30,10 @@
                             @Html.DisplayFor(m => item)
                         </td>
                         <td>
+                            <a class="btn btn-danger text-white" asp-action="Manage" asp-controller="Blob" asp-route-containerName="@item">Manage</a>
+                          
                             <a class="btn btn-danger text-white" asp-action="Delete" asp-route-containerName="@item">Delete</a>
-                            </td>
+                        </td>
                     </tr>
                 }
             </table>
