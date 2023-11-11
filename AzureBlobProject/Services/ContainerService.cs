@@ -11,9 +11,26 @@ public class ContainerService:IContainerService
     {
         _blobClient = blobClient;
     }
-    public Task<List<string>> GetALlContainerAndBlobs()
+    public async Task<List<string>> GetALlContainerAndBlobs()
     {
-        throw new NotImplementedException();
+        List<string> containerAndBlobNames = new();
+        containerAndBlobNames.Add("Account Name :" + _blobClient.AccountName);
+        containerAndBlobNames.Add("------------------------------------------------------------------------------------------------------------");
+
+        await foreach (BlobContainerItem blobContainerItem in _blobClient.GetBlobContainersAsync())
+        {
+            containerAndBlobNames.Add("--"+blobContainerItem.Name);
+            BlobContainerClient _blobContainer = _blobClient.GetBlobContainerClient(blobContainerItem.Name);
+
+           await  foreach (BlobItem blobItem in _blobContainer.GetBlobsAsync())
+            {
+                containerAndBlobNames.Add("--------"+blobItem.Name);
+            }
+           containerAndBlobNames.Add("--------------------------------------------------------------------------------------------------------------");
+        }
+
+        return containerAndBlobNames;
+
     }
 
     public async Task<List<string>> GetAllContainer()

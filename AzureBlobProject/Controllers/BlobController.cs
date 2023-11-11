@@ -19,16 +19,34 @@ public class BlobController : Controller
         
         return View(blobObj);
     }
-    public IActionResult AddFile()
+    [HttpGet]
+    public IActionResult AddFile(string containerName)
     {
-        return Empty;
+        return View();
     }
-    public IActionResult ViewFile()
+    [HttpPost]
+    public async Task<IActionResult> AddFile(string containerName,IFormFile file)
     {
-        return Empty;
+        if (file == null || file.Length < 1) return View();
+
+        var fileName = Path.GetFileNameWithoutExtension(file.FileName) + "_" + Guid.NewGuid() +
+                       Path.GetExtension(file.FileName);
+        var result = await _blobService.UploadBlob(fileName, file, containerName);
+
+        if (result)
+            return RedirectToAction("Index", "Container");
+
+        return View();
     }
-    public IActionResult DeleteFile()
+    [HttpGet]
+    public async Task<IActionResult> ViewFile(string name,string containerName)
     {
-        return Empty;
+        return Redirect(await _blobService.GetBlob(name, containerName));
+    }
+    public async Task<IActionResult> DeleteFile(string name,string containerName)
+    {
+        await _blobService.DeleteBlob(name, containerName);
+        
+        return RedirectToAction("Index","Container");
     }
 }
