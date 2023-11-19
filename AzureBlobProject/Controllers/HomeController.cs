@@ -7,10 +7,11 @@ public class HomeController : Controller
 {
     
     private readonly IContainerService _containerService;
-
-    public HomeController(IContainerService containerService)
+    private readonly IBlobService _blobService;
+    public HomeController(IContainerService containerService,IBlobService blobService)
     {
         _containerService = containerService;
+        _blobService = blobService;
     }
 
     // GET
@@ -18,5 +19,8 @@ public class HomeController : Controller
     {
         return View(await _containerService.GetALlContainerAndBlobs());
     }
-    
+    public async Task<IActionResult> Images()
+    {
+        return View(await _blobService.GetAllBlobsWIthUri("privatecontainer"));
+    }
 }
